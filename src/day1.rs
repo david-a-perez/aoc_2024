@@ -1,18 +1,19 @@
 use aoc_runner_derive::aoc;
+use atoi::FromRadix10;
 use itertools::Itertools;
 use nom::{
     bytes::complete::{tag, take},
     character::complete::line_ending,
-    combinator::{iterator, map_res, opt},
+    combinator::{iterator, map, opt},
     sequence::{separated_pair, terminated},
     IResult,
 };
 
-fn parse_num(i: &str) -> IResult<&str, usize> {
-    map_res(take(5usize), |digit_str: &str| digit_str.parse())(i)
+fn parse_num(i: &[u8]) -> IResult<&[u8], usize> {
+    map(take(5usize), |digit_str: &[u8]| usize::from_radix_10(digit_str).0)(i)
 }
 
-fn parse_line(i: &str) -> IResult<&str, (usize, usize)> {
+fn parse_line(i: &[u8]) -> IResult<&[u8], (usize, usize)> {
     terminated(
         separated_pair(parse_num, tag("   "), parse_num),
         opt(line_ending),
@@ -21,7 +22,7 @@ fn parse_line(i: &str) -> IResult<&str, (usize, usize)> {
 
 #[aoc(day1, part1)]
 pub fn part1(input: &str) -> usize {
-    let mut it = iterator(input, parse_line);
+    let mut it = iterator(input.as_bytes(), parse_line);
 
     let (mut col1, mut col2): (Vec<usize>, Vec<usize>) = it.unzip();
 
@@ -38,7 +39,7 @@ pub fn part1(input: &str) -> usize {
 
 #[aoc(day1, part2)]
 pub fn part2(input: &str) -> usize {
-    let mut it = iterator(input, parse_line);
+    let mut it = iterator(input.as_bytes(), parse_line);
 
     let (mut col1, mut col2): (Vec<usize>, Vec<usize>) = it.unzip();
 
