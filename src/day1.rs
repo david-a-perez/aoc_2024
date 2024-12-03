@@ -27,8 +27,8 @@ pub fn part1(input: &str) -> usize {
 
     it.finish().unwrap();
 
-    col1.sort();
-    col2.sort();
+    col1.sort_unstable();
+    col2.sort_unstable();
 
     col1.into_iter()
         .zip(col2.into_iter())
@@ -44,8 +44,8 @@ pub fn part2(input: &str) -> usize {
 
     it.finish().unwrap();
 
-    col1.sort();
-    col2.sort();
+    col1.sort_unstable();
+    col2.sort_unstable();
 
     col1.into_iter()
         .dedup_with_count()
