@@ -21,10 +21,12 @@ jobs:
         with:
           channel: stable
           cache-target: release
-          bins: cargo-codspeed, cargo-aoc
+          bins: cargo-codspeed
+      - name: Install cargo-aoc
+        run: cargo install --rev 81c765bc0e697ed8f64cc1ebd27b2480fc633483 --git https://github.com/david-a-perez/cargo-aoc cargo-aoc
       
       - name: Auto-generate and run benchmarks
-        run: cargo aoc bench
+        run: cargo aoc bench --all-days
 
       - name: You need to install the criterion.rs compatibility layer
         working-directory: ./target/aoc/aoc-autobench/
