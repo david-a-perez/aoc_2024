@@ -1,15 +1,15 @@
 use aoc_runner_derive::aoc;
 use itertools::Itertools;
 use nom::{
-    bytes::complete::tag,
-    character::complete::{digit1, line_ending},
+    bytes::complete::{tag, take},
+    character::complete::line_ending,
     combinator::{iterator, map_res, opt},
     sequence::{separated_pair, terminated},
     IResult,
 };
 
 fn parse_num(i: &str) -> IResult<&str, usize> {
-    map_res(digit1, |digit_str: &str| digit_str.parse())(i)
+    map_res(take(5usize), |digit_str: &str| digit_str.parse())(i)
 }
 
 fn parse_line(i: &str) -> IResult<&str, (usize, usize)> {
@@ -66,7 +66,7 @@ mod tests {
     #[test]
     fn part1_example() {
         assert_eq!(
-            part1("3   4\n4   3\n2   5\n1   3\n3   9\n3   3\n").to_string(),
+            part1("00003   00004\n00004   00003\n00002   00005\n00001   00003\n00003   00009\n00003   00003\n").to_string(),
             "11"
         );
     }
@@ -74,7 +74,7 @@ mod tests {
     #[test]
     fn part2_example() {
         assert_eq!(
-            part2("3   4\n4   3\n2   5\n1   3\n3   9\n3   3\n").to_string(),
+            part2("00003   00004\n00004   00003\n00002   00005\n00001   00003\n00003   00009\0000n3   00003\n").to_string(),
             "31"
         );
     }
