@@ -10,7 +10,9 @@ use nom::{
 };
 
 fn parse_num(i: &[u8]) -> IResult<&[u8], usize> {
-    map(take(5usize), |digit_str: &[u8]| usize::from_radix_10(digit_str).0)(i)
+    map(take(5usize), |digit_str: &[u8]| {
+        usize::from_radix_10(digit_str).0
+    })(i)
 }
 
 fn parse_line(i: &[u8]) -> IResult<&[u8], (usize, usize)> {
