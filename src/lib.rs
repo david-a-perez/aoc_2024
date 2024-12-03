@@ -1,3 +1,5 @@
+#![feature(slice_as_chunks)]
+
 use aoc_runner_derive::aoc_lib;
 
 pub mod day1;
