@@ -16,15 +16,15 @@ fn index(input: &[u8], row: Option<usize>, col: Option<usize>, cols: usize) -> O
 pub fn part1(input: &str) -> usize {
     let input = input.as_bytes();
 
-    let offsets: [(isize, isize); 8] = [
-        (-1, -1),
-        (-1, 0),
-        (-1, 1),
-        (0, -1),
-        (0, 1),
-        (1, -1),
-        (1, 0),
-        (1, 1),
+    const OFFSETS: [((isize, isize), (isize, isize), (isize, isize)); 8] = [
+        ((-1, -1), (-2, -2), (-3, -3)),
+        ((-1, 0), (-2, 0), (-3, 0)),
+        ((-1, 1), (-2, 2), (-3, 3)),
+        ((0, -1), (0, -2), (0, -3)),
+        ((0, 1), (0, 2), (0, 3)),
+        ((1, -1), (2, -2), (3, -3)),
+        ((1, 0), (2, 0), (3, 0)),
+        ((1, 1), (2, 2), (3, 3)),
     ];
 
     let mut total = 0;
@@ -36,18 +36,18 @@ pub fn part1(input: &str) -> usize {
     for row in 0..rows {
         for col in 0..cols - 1 {
             if index(input, Some(row), Some(col), cols) == Some(b'X') {
-                for (row_offset, col_offset) in offsets {
+                for ((row_offset, col_offset), (row_offset2, col_offset2), (row_offset3, col_offset3)) in OFFSETS {
                     if index(
                         input,
-                        row.checked_add_signed(3*row_offset),
-                        col.checked_add_signed(3*col_offset),
+                        row.checked_add_signed(row_offset3),
+                        col.checked_add_signed(col_offset3),
                         cols,
                     ) == Some(b'S')
                     {
                         if index(
                             input,
-                            row.checked_add_signed(2 * row_offset),
-                            col.checked_add_signed(2 * col_offset),
+                            row.checked_add_signed(row_offset2),
+                            col.checked_add_signed(col_offset2),
                             cols,
                         ) == Some(b'A')
                         {
