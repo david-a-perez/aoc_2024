@@ -1,4 +1,5 @@
 use aoc_runner_derive::aoc;
+use itertools::izip;
 
 fn index(input: &[u8], row: Option<usize>, col: Option<usize>, cols: usize) -> Option<u8> {
     if let (Some(col), Some(row)) = (col, row) {
@@ -27,6 +28,28 @@ pub fn part1(input: &str) -> usize {
         (1, 1),
     ];
 
+    let offsets2: [(isize, isize); 8] = [
+        (-2, -2),
+        (-2, 0),
+        (-2, 2),
+        (0, -2),
+        (0, 2),
+        (2, -2),
+        (2, 0),
+        (2, 2),
+    ];
+
+    let offsets3: [(isize, isize); 8] = [
+        (-3, -3),
+        (-3, 0),
+        (-3, 3),
+        (0, -3),
+        (0, 3),
+        (3, -3),
+        (3, 0),
+        (3, 3),
+    ];
+
     let mut total = 0;
 
     let cols = input.iter().position(|&c| c == b'\n').unwrap() + 1;
@@ -36,18 +59,18 @@ pub fn part1(input: &str) -> usize {
     for row in 0..rows {
         for col in 0..cols - 1 {
             if index(input, Some(row), Some(col), cols) == Some(b'X') {
-                for (row_offset, col_offset) in offsets {
+                for ((row_offset, col_offset), (row_offset2, col_offset2), (row_offset3, col_offset3)) in izip!(offsets, offsets2, offsets3) {
                     if index(
                         input,
-                        row.checked_add_signed(3*row_offset),
-                        col.checked_add_signed(3*col_offset),
+                        row.checked_add_signed(row_offset3),
+                        col.checked_add_signed(col_offset3),
                         cols,
                     ) == Some(b'S')
                     {
                         if index(
                             input,
-                            row.checked_add_signed(2 * row_offset),
-                            col.checked_add_signed(2 * col_offset),
+                            row.checked_add_signed(row_offset2),
+                            col.checked_add_signed(col_offset2),
                             cols,
                         ) == Some(b'A')
                         {
