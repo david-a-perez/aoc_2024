@@ -1,5 +1,4 @@
 use aoc_runner_derive::aoc;
-use itertools::izip;
 
 fn index(input: &[u8], row: Option<usize>, col: Option<usize>, cols: usize) -> Option<u8> {
     if let (Some(col), Some(row)) = (col, row) {
@@ -17,37 +16,15 @@ fn index(input: &[u8], row: Option<usize>, col: Option<usize>, cols: usize) -> O
 pub fn part1(input: &str) -> usize {
     let input = input.as_bytes();
 
-    let offsets: [(isize, isize); 8] = [
-        (-1, -1),
-        (-1, 0),
-        (-1, 1),
-        (0, -1),
-        (0, 1),
-        (1, -1),
-        (1, 0),
-        (1, 1),
-    ];
-
-    let offsets2: [(isize, isize); 8] = [
-        (-2, -2),
-        (-2, 0),
-        (-2, 2),
-        (0, -2),
-        (0, 2),
-        (2, -2),
-        (2, 0),
-        (2, 2),
-    ];
-
-    let offsets3: [(isize, isize); 8] = [
-        (-3, -3),
-        (-3, 0),
-        (-3, 3),
-        (0, -3),
-        (0, 3),
-        (3, -3),
-        (3, 0),
-        (3, 3),
+    const OFFSETS: [((isize, isize), (isize, isize), (isize, isize)); 8] = [
+        ((-1, -1), (-2, -2), (-3, -3)),
+        ((-1, 0), (-2, 0), (-3, 0)),
+        ((-1, 1), (-2, 2), (-3, 3)),
+        ((0, -1), (0, -2), (0, -3)),
+        ((0, 1), (0, 2), (0, 3)),
+        ((1, -1), (2, -2), (3, -3)),
+        ((1, 0), (2, 0), (3, 0)),
+        ((1, 1), (2, 2), (3, 3)),
     ];
 
     let mut total = 0;
@@ -59,7 +36,7 @@ pub fn part1(input: &str) -> usize {
     for row in 0..rows {
         for col in 0..cols - 1 {
             if index(input, Some(row), Some(col), cols) == Some(b'X') {
-                for ((row_offset, col_offset), (row_offset2, col_offset2), (row_offset3, col_offset3)) in izip!(offsets, offsets2, offsets3) {
+                for ((row_offset, col_offset), (row_offset2, col_offset2), (row_offset3, col_offset3)) in OFFSETS {
                     if index(
                         input,
                         row.checked_add_signed(row_offset3),
