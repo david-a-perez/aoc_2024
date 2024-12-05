@@ -39,10 +39,10 @@ pub fn part1(input: &str) -> usize {
                 for (row_offset, col_offset) in offsets {
                     if index(
                         input,
-                        row.checked_add_signed(row_offset),
-                        col.checked_add_signed(col_offset),
+                        row.checked_add_signed(3*row_offset),
+                        col.checked_add_signed(3*col_offset),
                         cols,
-                    ) == Some(b'M')
+                    ) == Some(b'S')
                     {
                         if index(
                             input,
@@ -53,10 +53,10 @@ pub fn part1(input: &str) -> usize {
                         {
                             if index(
                                 input,
-                                row.checked_add_signed(3 * row_offset),
-                                col.checked_add_signed(3 * col_offset),
+                                row.checked_add_signed(row_offset),
+                                col.checked_add_signed(col_offset),
                                 cols,
-                            ) == Some(b'S')
+                            ) == Some(b'M')
                             {
                                 total += 1;
                             }
