@@ -4,6 +4,7 @@ use nom::{
     bytes::complete::{tag, take},
     character::complete::{digit1, line_ending, not_line_ending},
     combinator::{map, opt, value},
+    error::{Error, ErrorKind, ParseError},
     multi::fold_many1,
     sequence::{preceded, separated_pair, terminated},
     Err, IResult,
@@ -13,18 +14,41 @@ fn parse_num(i: &[u8]) -> IResult<&[u8], usize> {
     map(digit1, |digit_str: &[u8]| usize::from_radix_10(digit_str).0)(i)
 }
 
-fn parse_rules(i: &[u8]) -> IResult<&[u8], [u128; 100]> {
-    fold_many1(
-        terminated(
-            separated_pair(parse_num, take(1usize), parse_num),
-            line_ending,
-        ),
-        || [0u128; 100],
-        |mut acc, (before, after)| {
-            acc[before] |= 1 << after;
-            acc
-        },
-    )(i)
+pub fn parse_rules(i: &[u8]) -> IResult<&[u8], [u128; 100]> {
+    let _i = i;
+    let mut rules = [0; 100];
+    match terminated(
+        separated_pair(parse_num, take(1usize), parse_num),
+        line_ending,
+    )(_i)
+    {
+        Err(Err::Error(_)) => Err(Err::Error(Error::from_error_kind(i, ErrorKind::Many1))),
+        Err(e) => Err(e),
+        Ok((i1, (before, after))) => {
+            rules[before] |= 1 << after;
+            let mut input = i1;
+
+            loop {
+                let _input = input;
+                match terminated(
+                    separated_pair(parse_num, take(1usize), parse_num),
+                    line_ending,
+                )(_input)
+                {
+                    Err(Err::Error(_)) => {
+                        break;
+                    }
+                    Err(e) => return Err(e),
+                    Ok((i, (before, after))) => {
+                        rules[before] |= 1 << after;
+                        input = i;
+                    }
+                }
+            }
+
+            Ok((input, rules))
+        }
+    }
 }
 
 fn parse_update(rules: &[u128; 100]) -> impl FnMut(&[u8]) -> IResult<&[u8], usize> + use<'_> {
