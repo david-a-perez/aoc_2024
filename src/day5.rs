@@ -122,7 +122,8 @@ pub fn part1(input: &str) -> usize {
 fn bubble_sort(list: &mut [usize], rules: &[u128; 100]) -> bool {
     let mut n = list.len();
     let mut swapped = false;
-    while n > 1 {
+    let half_n = list.len() / 2;
+    while n > half_n {
         let mut new_n = 0;
         for i in 1..n {
             if rules[list[i]] & (1 << list[i - 1]) != 0 {
