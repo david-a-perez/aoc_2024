@@ -1,0 +1,28 @@
+# Based on https://github.com/jonhoo/rust-ci-conf
+
+# This is the main CI workflow that runs the test suite on all pushes to main and all pull requests.
+# It runs the following jobs:
+# - required: runs the test suite on ubuntu
+# See check.yml for information about how the concurrency cancellation and workflow triggering works
+permissions:
+  contents: read
+on:
+  push:
+    branches: [main]
+  pull_request:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+name: test
+jobs:
+  required:
+    runs-on: ubuntu-latest
+    name: ubuntu
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup rust toolchain and cache
+        uses: moonrepo/setup-rust@v1
+
+      - name: cargo test --locked
+        run: cargo test --locked
