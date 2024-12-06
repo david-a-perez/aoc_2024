@@ -19,9 +19,9 @@ jobs:
       - name: Setup rust toolchain, cache and cargo-codspeed binary
         uses: moonrepo/setup-rust@v1
         with:
-          channel: nightly-2024-12-02
           cache-target: release
           bins: cargo-codspeed
+
       - name: Install cargo-aoc
         run: cargo install --rev 81c765bc0e697ed8f64cc1ebd27b2480fc633483 --git https://github.com/david-a-perez/cargo-aoc cargo-aoc
       
