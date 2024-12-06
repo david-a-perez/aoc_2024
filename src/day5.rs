@@ -4,7 +4,7 @@ use nom::{
     bytes::complete::{tag, take},
     character::complete::{digit1, line_ending, not_line_ending},
     combinator::{map, opt, value},
-    multi::{fold_many1, separated_list1},
+    multi::fold_many1,
     sequence::{preceded, separated_pair, terminated},
     Err, IResult,
 };
@@ -112,11 +112,44 @@ fn bubble_sort(list: &mut [usize], rules: &[u128; 100]) -> bool {
     swapped
 }
 
-fn parse_incorrect_update(
-    rules: &[u128; 100],
-) -> impl FnMut(&[u8]) -> IResult<&[u8], usize> + use<'_> {
+pub fn comma_separated_nums(
+    res: &mut Vec<usize>,
+) -> impl FnMut(&[u8]) -> IResult<&[u8], ()> + use<'_> {
+    move |mut i| {
+        res.clear();
+
+        // Parse the first element
+        match parse_num(i) {
+            Err(e) => return Err(e),
+            Ok((i1, o)) => {
+                res.push(o);
+                i = i1;
+            }
+        }
+
+        loop {
+            match tag(",")(i) {
+                Err(Err::Error(_)) => return Ok((i, ())),
+                Err(e) => return Err(e),
+                Ok((i1, _)) => match parse_num(i1) {
+                    Err(Err::Error(_)) => return Ok((i, ())),
+                    Err(e) => return Err(e),
+                    Ok((i2, o)) => {
+                        res.push(o);
+                        i = i2;
+                    }
+                },
+            }
+        }
+    }
+}
+
+fn parse_incorrect_update<'a, 'b>(
+    rules: &'a [u128; 100],
+) -> impl FnMut(&[u8]) -> IResult<&[u8], usize> + use<'a, 'b> {
+    let mut list = Vec::new();
     move |i| {
-        let (i, mut list) = separated_list1(tag(","), parse_num)(i)?;
+        let (i, ()) = comma_separated_nums(&mut list)(i)?;
 
         let swapped = bubble_sort(&mut list, rules);
 
