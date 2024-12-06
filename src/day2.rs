@@ -5,7 +5,8 @@ use nom::{
     bytes::complete::tag,
     character::complete::{digit1, line_ending, not_line_ending},
     combinator::{eof, iterator, map, value, verify},
-    sequence::{pair, preceded}, IResult,
+    sequence::{pair, preceded},
+    IResult,
 };
 
 fn parse_num(i: &[u8]) -> IResult<&[u8], usize> {
