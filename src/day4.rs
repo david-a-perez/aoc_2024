@@ -39,8 +39,8 @@ pub fn part1(input: &str) -> usize {
                 for (row_offset, col_offset) in offsets {
                     if index(
                         input,
-                        row.checked_add_signed(3*row_offset),
-                        col.checked_add_signed(3*col_offset),
+                        row.checked_add_signed(3 * row_offset),
+                        col.checked_add_signed(3 * col_offset),
                         cols,
                     ) == Some(b'S')
                     {
